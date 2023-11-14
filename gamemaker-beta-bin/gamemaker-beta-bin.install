@@ -1,0 +1,11 @@
+post_install() {
+    echo "=== Before running GameMaker ==="
+    echo "You might want to install the steam runtime required to run and build your games with GameMaker. To do this, refer to https://help.gamemaker.io/hc/en-us/articles/235186168-Setting-Up-For-Ubuntu, section 'Steam Runtimes'."
+    echo "TLDR:"
+    echo '$ sudo mkdir /opt/steam-runtime/'
+    echo '$ curl https://repo.steampowered.com/steamrt-images-scout/snapshots/latest-steam-client-general-availability/com.valvesoftware.SteamRuntime.Sdk-amd64,i386-scout-sysroot.tar.gz | sudo tar -xzf - -C /opt/steam-runtime/'
+}
+
+post_remove() {
+    echo "Consider removing the steam runtime you installed for GameMaker, it is usually located in '/opt/steam-runtime'. '$$ sudo rm -rf /opt/steam-runtime'"
+}

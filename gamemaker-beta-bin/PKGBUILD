@@ -1,0 +1,33 @@
+# Maintainer: vypxl <thomas at vypxl dot io>
+pkgname=gamemaker-beta-bin
+pkgver=2023.1100.0.435
+pkgrel=1
+url="https://gamemaker.io/"
+arch=(x86_64)
+pkgdesc="GameMaker makes designing games easy, regardless of your background or skill level. All you need is an idea!"
+source=("https://gms.yoyogames.com/GameMaker-Beta-${pkgver}.deb"
+        "LICENSE"
+        "GameMaker-Beta.desktop.patch"
+        "launcher.sh")
+sha256sums=('7bc6ff9a5b6a2108a5de7984004468c4378951e540196b2dbb324b5de30fabaf'
+            '4ed1e936a919ebdc4bcd4134e555a08e750326053fa3b5ede5fd35028984926e'
+            '05c58b327d3e6f902a42b801a683882320714ab0fb3442b495c3dbf0dc7eeadf'
+            'ff3c63cd6e66c48fe8258854c218fae899b19a8d758f94ea211e6c9f25943d94')
+license=("custom")
+install=$pkgname.install
+depends=("openssl" "openssh" "clang" "libxrandr" "libxxf86vm" "openal" "libglvnd" "mesa" "glu" "zlib" "curl" "ffmpeg" "zip" "unzip" "gtk3" "appimagetool" "linuxdeploy")
+options=(!strip)
+package() {
+  cd "$pkgdir"
+  tar xf "$srcdir"/data.tar.xz
+
+  # Patch desktop file to fix problem with environment during build process
+  # https://github.com/YoYoGames/GameMaker-Bugs/issues/2204
+  patch usr/share/applications/GameMaker-Beta.desktop < "$srcdir"/GameMaker-Beta.desktop.patch
+
+  # License
+  install -Dm644 "$srcdir"/LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
+
+  # Install launcher
+  install -Dm755 "$srcdir"/launcher.sh "$pkgdir"/usr/bin/GameMaker
+}
