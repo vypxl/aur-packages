@@ -1,0 +1,30 @@
+# Maintainer: vypxl <thomas at vypxl dot io>
+
+pkgname=linuxdeploy-appimage
+provides=(linuxdeploy)
+pkgver=6a583d5
+pkgrel=1
+url="https://github.com/linuxdeploy/linuxdeploy"
+arch=(x86_64)
+pkgdesc="AppDir creation and maintenance tool. Featuring flexible plugin system."
+source=("https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-static-x86_64.AppImage")
+noextract=("linuxdeploy-static-x86_64.AppImage")
+sha256sums=(SKIP)
+license=("MIT")
+depends=()
+options=(!strip)
+
+prepare() {
+  chmod +x "$srcdir"/linuxdeploy-static-x86_64.AppImage
+}
+
+pkgver() {
+  "$srcdir"/linuxdeploy-static-x86_64.AppImage --version 2> >(awk '{print substr($7, 1, length($7)-2)}')
+}
+
+package() {
+  cd "$pkgdir"
+  mkdir -p usr/bin
+
+  install -Dm755 "$srcdir"/linuxdeploy-static-x86_64.AppImage "$pkgdir"/usr/bin/linuxdeploy
+}
