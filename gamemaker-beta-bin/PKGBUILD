@@ -17,17 +17,23 @@ license=("custom")
 install=$pkgname.install
 depends=("openssl" "openssh" "clang" "libxrandr" "libxxf86vm" "openal" "libglvnd" "mesa" "glu" "zlib" "curl" "ffmpeg" "zip" "unzip" "gtk3" "appimagetool" "linuxdeploy")
 options=(!strip)
-package() {
-  cd "$pkgdir"
-  tar xf "$srcdir"/data.tar.xz
+
+prepare() {
+  bsdtar xf data.tar.xz
 
   # Patch desktop file to fix problem with environment during build process
   # https://github.com/YoYoGames/GameMaker-Bugs/issues/2204
-  patch usr/share/applications/GameMaker-Beta.desktop < "$srcdir"/GameMaker-Beta.desktop.patch
+  patch usr/share/applications/GameMaker-Beta.desktop < GameMaker-Beta.desktop.patch
+}
+
+package() {
+  # Install files
+  cp -R usr "$pkgdir"/
+  cp -R opt "$pkgdir"/
 
   # License
-  install -Dm644 "$srcdir"/LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
+  install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
 
   # Install launcher
-  install -Dm755 "$srcdir"/launcher.sh "$pkgdir"/usr/bin/GameMaker
+  install -Dm755 launcher.sh "$pkgdir"/usr/bin/GameMaker
 }
