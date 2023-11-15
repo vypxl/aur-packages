@@ -1,37 +1,45 @@
 # Maintainer: vypxl <thomas at vypxl dot io>
 pkgname=gamemaker-beta-bin
 pkgver=2023.1100.0.435
+_linuxdeploy_ver=1-alpha-20231026-1
 pkgrel=1
 url="https://gamemaker.io/"
 arch=(x86_64)
 pkgdesc="GameMaker makes designing games easy, regardless of your background or skill level. All you need is an idea!"
 source=("https://gms.yoyogames.com/GameMaker-Beta-${pkgver}.deb"
+        "linuxdeploy-$_linuxdeploy_ver.AppImage"::"https://github.com/linuxdeploy/linuxdeploy/releases/download/$_linuxdeploy_ver/linuxdeploy-static-x86_64.AppImage"
         "LICENSE"
         "GameMaker-Beta.desktop.patch"
         "launcher.sh")
+noextract=("linuxdeploy-$_linuxdeploy_ver.AppImage")
 sha256sums=('7bc6ff9a5b6a2108a5de7984004468c4378951e540196b2dbb324b5de30fabaf'
+            '7e354fb6722b04ac1838e4bde0a49564518400dc9680a33f8d799e877f9f5f6a'
             '4ed1e936a919ebdc4bcd4134e555a08e750326053fa3b5ede5fd35028984926e'
-            '05c58b327d3e6f902a42b801a683882320714ab0fb3442b495c3dbf0dc7eeadf'
-            'ff3c63cd6e66c48fe8258854c218fae899b19a8d758f94ea211e6c9f25943d94')
-license=("custom")
+            'f2f223bf59e8e31f44e04c19b95996a68470bddb0b5faae5ed12ac2b0dcc149c'
+            '8fb7dfa5ca68d7dc5fa6f033e799784502841a6d4aba7505a91bef6f1a909881')
+license=("custom" "MIT")
 install=$pkgname.install
-depends=("openssl" "openssh" "clang" "libxrandr" "libxxf86vm" "openal" "libglvnd" "mesa" "glu" "zlib" "curl" "ffmpeg" "zip" "unzip" "gtk3" "appimagetool" "linuxdeploy")
+depends=("openssl" "openssh" "clang" "libxrandr" "libxxf86vm" "openal" "libglvnd" "mesa" "glu" "zlib" "curl" "ffmpeg" "zip" "unzip" "gtk3" "appimagetool")
 options=(!strip)
 
 prepare() {
   bsdtar xf data.tar.xz
 
-  # Patch desktop file to fix problem with environment during build process
+  # Patch desktop file to fix problem with environment during build process, and for GM to find linuxdeploy
   # https://github.com/YoYoGames/GameMaker-Bugs/issues/2204
   patch usr/share/applications/GameMaker-Beta.desktop < GameMaker-Beta.desktop.patch
 }
 
 package() {
-  # Install files
+  # Install linuxdeploy appimage
+  # GameMaker needs the appimage, a repackaged version of the tool won't work.
+  install -Dm755 "$srcdir"/linuxdeploy-"$_linuxdeploy_ver".AppImage "$pkgdir"/opt/GameMaker-Beta/linuxdeploy/linuxdeploy
+
+  # Install GM files
   cp -R usr "$pkgdir"/
   cp -R opt "$pkgdir"/
 
-  # License
+  # Install License
   install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
 
   # Install launcher

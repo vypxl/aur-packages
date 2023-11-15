@@ -3,7 +3,7 @@
  Version=1.0
  Encoding=UTF-8
 -Exec=/opt/GameMaker-Beta/GameMaker %F
-+Exec=sh -c 'export PATH="/bin:$PATH"; /opt/GameMaker-Beta/GameMaker %F'
++Exec=sh -c 'export PATH="/opt/GameMaker-Beta/linuxdeploy:/bin:$PATH"; /opt/GameMaker-Beta/GameMaker %F'
  Icon=/opt/GameMaker-Beta/GameMaker.png
  Name=GameMaker-Beta
  GenericName=GameMaker-Beta

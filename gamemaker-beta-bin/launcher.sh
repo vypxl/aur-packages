@@ -1,3 +1,3 @@
 #!/bin/sh
-export PATH="$PATH:/bin/"
+export PATH="/opt/GameMaker-Beta/linuxdeploy:/bin:$PATH"
 exec /opt/GameMaker-Beta/GameMaker
